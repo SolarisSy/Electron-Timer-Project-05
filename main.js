@@ -1,19 +1,25 @@
 const { app, BrowserWindow, ipcMain, Tray, Menu } = require('electron');
 const data = require('./data')
-const templateGenerator = require('./template');
+const templateGenerator = require('./template')
 
-
+let mainWindow = null;
 app.on('ready', () => {
     console.log('Aplicacão iniciada');
-    let mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: 600,
         height: 400,
     });
     tray = new Tray( __dirname + '/app/img/icon-tray.png');
-    
     let template = templateGenerator.geraTrayTemplate(mainWindow);
     let trayMenu = Menu.buildFromTemplate(template)
     tray.setContextMenu(trayMenu);
+    
+
+    let templateMenu = templateGenerator.geraMenuPrincipalTemplate(app);
+    let menuPrincipal = Menu.buildFromTemplate(templateMenu);
+    Menu.setApplicationMenu(menuPrincipal);
+
+    mainWindow.openDevTools();
     mainWindow.loadURL(`file://${__dirname}/app/index.html`);
     
 });
@@ -39,6 +45,10 @@ ipcMain.on('abrir-janela-sobre', () => {
     
 });
 
+ipcMain.on('click-evento-disparado', () => {
+    console.log('evento disparado');
+})
+
 ipcMain.on('fechar-janela-sobre', () => {
     sobreWindow.close();
 });
@@ -47,3 +57,10 @@ ipcMain.on('curso-parado', (event,curso, tempoEstudado) => {
     console.log(`O curso ${curso} foi estudado por ${tempoEstudado}`);
     data.salvaDados(curso, tempoEstudado);
 });
+
+ipcMain.on('curso-adicionado', (event, novoCurso)=>{
+    let novoTemplate = templateGenerator.adicionaCursoNoTray( novoCurso, mainWindow );
+    let novoTrayTemplate = Menu.buildFromTemplate(novoTemplate);
+    tray.setContextMenu(novoTrayTemplate);
+});
+

@@ -41,3 +41,40 @@ ipcRenderer.on('curso-trocado', (event, nomeCurso) =>{
         })
     curso.textContent = nomeCurso;
 });
+
+let botaoAdicionar = document.querySelector('.botao-adicionar');
+let campoAdicionar = document.querySelector('.campo-adicionar');
+
+botaoAdicionar.addEventListener('click', function() {
+    let novoCurso = campoAdicionar.value;
+    curso.textContent = novoCurso;
+    tempo.textContent = '00:00:00';
+    campoAdicionar.textContent = '';
+    ipcRenderer.send('curso-adicionado', novoCurso);
+})
+
+module.exports = {
+    templateInical : null,
+    geraTrayTemplate(win){
+        let template = [
+            {
+                'label': 'Cursos'
+            },
+            {
+                type: 'separator'
+            }
+        ];
+    },
+    adicionaCursoNoTray(curso,win){
+        this.templateInical.push({
+            label: curso,
+            type: 'radio',
+            checked: true,
+            click: () => {
+                win.send('curso-trocado', curso);
+            }
+        })
+
+        return this.templateInical;
+    }
+}
