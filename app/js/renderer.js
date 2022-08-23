@@ -51,7 +51,16 @@ botaoAdicionar.addEventListener('click', function() {
     tempo.textContent = '00:00:00';
     campoAdicionar.textContent = '';
     ipcRenderer.send('curso-adicionado', novoCurso);
-})
+});
+
+ipcRenderer.on('atalho-iniciar-parar', () => {
+    console.log('Atalho no renderer process');
+    let click = new MouseEvent('click');
+    botaoPlay.dispatchEvent(click);
+});
+
+
+
 
 module.exports = {
     templateInical : null,

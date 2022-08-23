@@ -54,7 +54,8 @@ module.exports = {
             label: 'Window',
             submenu: [
                 {
-                    role: 'minimize'
+                    role: 'minimize',
+                    accelerator: 'ALT + N'
                 },
                 {
                     role: 'close'
@@ -68,7 +69,8 @@ module.exports = {
                     label: 'Sobre o Alura Timer',
                     click: () => {
                         ipcMain.emit('abrir-janela-sobre');
-                    }
+                    },
+                    accelerator: 'CTRL + I'
                 }
             ]
         }, 
